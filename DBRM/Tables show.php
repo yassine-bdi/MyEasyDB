@@ -6,9 +6,9 @@ require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Database' . DIRECTORY_SEP
 
   if(isset($_POST['username']) && isset($_POST['db']) && isset($_POST['password']) ) {
   $username =htmlspecialchars( $_POST['username']); 
-  $db = $_POST['db']; 
-  $addr = $_POST['adress']; 
-  $password = $_POST['password']; 
+  $db = htmlspecialchars($_POST['db']); 
+  $addr = htmlspecialchars($_POST['adress']); 
+  $password = htmlspecialchars($_POST['password']); 
   $Database = new DB('mysql:dbname=' . $db .';host=' . $addr . '', $username, $password ); 
   $_SESSION['db'] = $db; 
   $_SESSION['user'] = $username;  
