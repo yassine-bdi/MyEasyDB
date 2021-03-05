@@ -36,10 +36,15 @@ class DB
     //getting database's tables 
 
     public function getTables(String $db) 
-    {
+    {   
+        try {
         $dbb = new PDO($this->adress, $this->username, $this->password); 
         $request1 = $dbb->prepare("SELECT Table_name  from information_schema.tables where table_schema = ?");
         $request1->execute(array($db));
+        if($result1 = $request1->fetch() == FALSE) {
+          echo  '<img class="mb-4" src="../Layouts/database-svgrepo-com (1).svg" alt="" width="300" height="200">'; 
+          echo "<h2>This database is empty </h2> "; 
+        }
         while( $result1 = $request1->fetch()) {
           echo   '<h5>table name : ' . $result1['TABLE_NAME'] . '</h5>'; 
           ?>
@@ -70,6 +75,11 @@ class DB
             
              echo '</table>'; 
         }
+        }
+        catch(PDOException $e) {
+          header('Location:error.php?e='. $e->getMessage() . '&db=' . $db . '&action=connect%20to'); 
+   
+        }
         
     }
 
@@ -85,5 +95,49 @@ class DB
       } 
       
     }
+    
+    public static function createDatabase(String $db) 
+    {
+      try {
+      $dbb = new PDO("mysql:dbname=", 'root', ''); 
+      // setting the PDO error mode to exception
+    $dbb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $sql = "CREATE DATABASE " . $db ;
+    // using exec() because no results are returned
+    $dbb->exec($sql);
+    header('Location:TablesShow.php?success=1&db=' . $db);
+    
+     
+
+    }
+    catch(PDOException $e)
+    {
+
+      header('Location:error.php?e='. $e->getMessage() .'&db=' . $db . '&action=create' );  
+    }
+    $dbb = null;
 
 }
+
+    public static function deleteDatabase(String $db) 
+    {
+      try {
+        $dbb = new PDO("mysql:dbname=", 'root', ''); 
+        // setting the PDO error mode to exception
+      $dbb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+      $sql = "DROP DATABASE " . $db ;
+      // using exec() because no results are returned
+      $dbb->exec($sql);
+      header('Location:../index.php?success=1&db=' . $db);
+      
+       
+  
+      }
+      catch(PDOException $e)
+      {
+  
+        header('Location:error.php?e='. $e->getMessage() .'&db=' . $db . '&action=delete' ); 
+      }
+      $dbb = null;
+    }
+  }
