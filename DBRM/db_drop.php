@@ -6,5 +6,5 @@ if(isset($_POST['db']) ) {
     
     $db = htmlspecialchars($_POST['db']); 
     
-} 
-DB::deleteDatabase($db); 
+   } 
+     DB::deleteDatabase($db); 
